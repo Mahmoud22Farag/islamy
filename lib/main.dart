@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:islamiapplication/hades/hadeth_detailes.dart';
@@ -5,6 +6,7 @@ import 'package:islamiapplication/main/first.dart';
 import 'package:islamiapplication/provider/app_config_provider.dart';
 import 'package:islamiapplication/quran/sura_detalis.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'main/my_theme.dart';
 
 void main() {
@@ -14,10 +16,12 @@ void main() {
 
 class MyApp extends StatelessWidget {
   static const String routeName = 'Home_Screen';
+  late appconfigprocider provider;
 
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<appconfigprocider>(context);
+     provider = Provider.of<appconfigprocider>(context);
+    intialSharedPerf();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: MyApp.routeName,
@@ -34,4 +38,16 @@ class MyApp extends StatelessWidget {
       darkTheme: MyTheme.darkthem,
     );
   }
-}
+    intialSharedPerf() async {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      String lang = prefs.getString('lang')??'en';
+      String theme=prefs.getString('theme')??'light';
+      provider.chanelang(lang);
+      if(theme=='light'){
+        provider.changetheme(ThemeMode.light);
+      }else{
+        provider.changetheme(ThemeMode.dark);
+      }
+    }
+  }
+
